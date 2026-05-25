@@ -11,61 +11,67 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1>🎯 EvalHub</h1>
-                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <h2>⭐ EvalHub</h2>
+                <button class="btn-icon" onclick="toggleTheme()">🌙</button>
             </div>
             <nav class="sidebar-nav">
-                <button class="nav-btn active" data-view="dashboard">📊 Tableau de bord</button>
-                <button class="nav-btn" data-view="projects">📁 Mes projets</button>
-                <button class="nav-btn" data-view="create">➕ Nouveau projet</button>
-                <button class="nav-btn" data-view="compare">⚖️ Comparer</button>
-                <button class="nav-btn" data-view="stats">📈 Statistiques</button>
+                <button class="nav-item active" onclick="switchTab('dashboard')">
+                    📊 Tableau de bord
+                </button>
+                <button class="nav-item" onclick="switchTab('projects')">
+                    📋 Mes projets
+                </button>
+                <button class="nav-item" onclick="switchTab('create')">
+                    ➕ Nouveau projet
+                </button>
+                <button class="nav-item" onclick="switchTab('compare')">
+                    🔄 Comparer
+                </button>
+                <button class="nav-item" onclick="switchTab('settings')">
+                    ⚙️ Paramètres
+                </button>
             </nav>
             <div class="sidebar-footer">
-                <button class="btn-danger" id="exportBtn">📥 Exporter</button>
-                <button class="btn-secondary" id="clearBtn">🗑️ Effacer tout</button>
+                <button class="btn-secondary" onclick="goHome()">← Retour à l'accueil</button>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Dashboard View -->
-            <section id="dashboard" class="view active">
-                <div class="view-header">
-                    <h2>Tableau de bord</h2>
-                    <p id="projectCount">Aucun projet encore</p>
-                </div>
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <h1>Tableau de bord</h1>
                 <div class="dashboard-grid">
                     <div class="stat-card">
-                        <div class="stat-value" id="totalProjects">0</div>
-                        <div class="stat-label">Projets</div>
+                        <h3>Total de projets</h3>
+                        <p class="stat-number" id="totalProjects">0</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="avgRating">0/5</div>
-                        <div class="stat-label">Note moyenne</div>
+                        <h3>Évaluation moyenne</h3>
+                        <p class="stat-number" id="avgRating">0/5</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="topCategory">-</div>
-                        <div class="stat-label">Catégorie principale</div>
+                        <h3>Meilleur projet</h3>
+                        <p class="stat-text" id="bestProject">-</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="bestProject">-</div>
-                        <div class="stat-label">Meilleur projet</div>
+                        <h3>Catégorie principale</h3>
+                        <p class="stat-text" id="mainCategory">-</p>
                     </div>
                 </div>
-                <div id="recentProjects" class="recent-projects">
-                    <h3>Projets récents</h3>
-                    <div id="recentList" class="projects-list"></div>
+                <div class="chart-container">
+                    <h3>Distribution par catégorie</h3>
+                    <div id="categoryChart" class="chart"></div>
                 </div>
             </section>
 
-            <!-- Projects View -->
-            <section id="projects" class="view">
-                <div class="view-header">
-                    <h2>Mes projets</h2>
+            <!-- Projects Tab -->
+            <section id="projects" class="tab-content">
+                <div class="section-header">
+                    <h1>Mes projets</h1>
                     <div class="search-bar">
-                        <input type="text" id="searchInput" placeholder="Rechercher un projet...">
-                        <select id="categoryFilter">
+                        <input type="text" id="searchInput" placeholder="Rechercher un projet..." onkeyup="filterProjects()">
+                        <select id="categoryFilter" onchange="filterProjects()">
                             <option value="">Toutes les catégories</option>
                             <option value="Santé">Santé</option>
                             <option value="Technologie">Technologie</option>
@@ -76,181 +82,170 @@
                         </select>
                     </div>
                 </div>
-                <div id="projectsList" class="projects-list"></div>
+                <div id="projectsList" class="projects-grid"></div>
             </section>
 
-            <!-- Create Project View -->
-            <section id="create" class="view">
-                <div class="view-header">
-                    <h2>Créer un nouveau projet</h2>
-                </div>
-                <form id="projectForm" class="form">
+            <!-- Create Project Tab -->
+            <section id="create" class="tab-content">
+                <h1>Créer un nouveau projet</h1>
+                <form id="projectForm" class="form-container" onsubmit="addProject(event)">
                     <div class="form-group">
-                        <label for="projectName">Nom du projet *</label>
-                        <input type="text" id="projectName" placeholder="Entrez le nom du projet" required>
+                        <label>Nom du projet *</label>
+                        <input type="text" id="projectName" required placeholder="Ex: Application de santé">
                     </div>
 
                     <div class="form-group">
-                        <label for="projectCategory">Catégorie *</label>
-                        <select id="projectCategory" required>
-                            <option value="">Sélectionnez une catégorie</option>
-                            <option value="Santé">Santé</option>
-                            <option value="Technologie">Technologie</option>
-                            <option value="Éducation">Éducation</option>
-                            <option value="Infrastructure">Infrastructure</option>
-                            <option value="Environnement">Environnement</option>
-                            <option value="Autre">Autre</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="projectDescription">Description</label>
-                        <textarea id="projectDescription" placeholder="Décrivez votre projet..." rows="4"></textarea>
+                        <label>Description</label>
+                        <textarea id="projectDescription" placeholder="Décrivez votre projet..."></textarea>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="projectCost">Budget estimé</label>
-                            <input type="number" id="projectCost" placeholder="0" min="0">
+                            <label>Catégorie *</label>
+                            <select id="projectCategory" required>
+                                <option value="">Sélectionnez une catégorie</option>
+                                <option value="Santé">Santé</option>
+                                <option value="Technologie">Technologie</option>
+                                <option value="Éducation">Éducation</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Environnement">Environnement</option>
+                                <option value="Autre">Autre</option>
+                            </select>
                         </div>
+
                         <div class="form-group">
-                            <label for="projectDeadline">Délai (jours)</label>
-                            <input type="number" id="projectDeadline" placeholder="0" min="0">
+                            <label>Responsable</label>
+                            <input type="text" id="projectOwner" placeholder="Votre nom">
                         </div>
                     </div>
 
-                    <div class="criteria-section">
-                        <h3>Critères d'évaluation</h3>
-                        <div class="criteria-grid">
+                    <div class="form-group">
+                        <label>Critères d'évaluation</label>
+                        <div class="criteria-container">
                             <div class="criteria-item">
-                                <label for="qualityRating">Qualité</label>
-                                <div class="star-rating" data-criterion="quality">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                <span class="rating-value" id="qualityValue">0/5</span>
+                                <label>Qualité (1-5)</label>
+                                <input type="range" id="quality" min="1" max="5" value="3" class="slider" oninput="updateSliderValue(this)">
+                                <span class="slider-value">3/5</span>
                             </div>
-
                             <div class="criteria-item">
-                                <label>Coût</label>
-                                <div class="star-rating" data-criterion="cost">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                <span class="rating-value" id="costValue">0/5</span>
+                                <label>Coût (1-5)</label>
+                                <input type="range" id="cost" min="1" max="5" value="3" class="slider" oninput="updateSliderValue(this)">
+                                <span class="slider-value">3/5</span>
                             </div>
-
                             <div class="criteria-item">
-                                <label>Impact</label>
-                                <div class="star-rating" data-criterion="impact">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                <span class="rating-value" id="impactValue">0/5</span>
+                                <label>Impact (1-5)</label>
+                                <input type="range" id="impact" min="1" max="5" value="3" class="slider" oninput="updateSliderValue(this)">
+                                <span class="slider-value">3/5</span>
                             </div>
-
                             <div class="criteria-item">
-                                <label>Délai</label>
-                                <div class="star-rating" data-criterion="timeline">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                <span class="rating-value" id="timelineValue">0/5</span>
+                                <label>Délai (1-5)</label>
+                                <input type="range" id="timeline" min="1" max="5" value="3" class="slider" oninput="updateSliderValue(this)">
+                                <span class="slider-value">3/5</span>
                             </div>
-
                             <div class="criteria-item">
-                                <label>Viabilité</label>
-                                <div class="star-rating" data-criterion="feasibility">
-                                    <span class="star" data-value="1">★</span>
-                                    <span class="star" data-value="2">★</span>
-                                    <span class="star" data-value="3">★</span>
-                                    <span class="star" data-value="4">★</span>
-                                    <span class="star" data-value="5">★</span>
-                                </div>
-                                <span class="rating-value" id="feasibilityValue">0/5</span>
+                                <label>Viabilité (1-5)</label>
+                                <input type="range" id="viability" min="1" max="5" value="3" class="slider" oninput="updateSliderValue(this)">
+                                <span class="slider-value">3/5</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="projectComments">Commentaires/Notes</label>
-                        <textarea id="projectComments" placeholder="Ajoutez des commentaires..." rows="4"></textarea>
+                        <label>Notes / Commentaires</label>
+                        <textarea id="projectNotes" placeholder="Ajoutez des notes supplémentaires..."></textarea>
                     </div>
 
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-primary">💾 Créer le projet</button>
-                        <button type="reset" class="btn-secondary">🔄 Réinitialiser</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Créer le projet</button>
+                        <button type="reset" class="btn-secondary">Réinitialiser</button>
                     </div>
                 </form>
             </section>
 
-            <!-- Compare View -->
-            <section id="compare" class="view">
-                <div class="view-header">
-                    <h2>Comparer les projets</h2>
-                </div>
-                <div class="compare-controls">
+            <!-- Compare Tab -->
+            <section id="compare" class="tab-content">
+                <h1>Comparer les projets</h1>
+                <div class="compare-container">
                     <div class="compare-select">
-                        <label>Projet 1</label>
-                        <select id="compareProject1">
-                            <option value="">Sélectionnez un projet</option>
-                        </select>
+                        <label>Sélectionnez 2-3 projets à comparer:</label>
+                        <div id="compareCheckboxes" class="checkbox-list"></div>
+                        <button class="btn-primary" onclick="compareProjects()">Comparer</button>
                     </div>
-                    <div class="compare-select">
-                        <label>Projet 2</label>
-                        <select id="compareProject2">
-                            <option value="">Sélectionnez un projet</option>
-                        </select>
-                    </div>
-                    <button id="compareBtn" class="btn-primary">Comparer</button>
+                    <div id="compareResults" class="compare-results"></div>
                 </div>
-                <div id="compareResult" class="compare-result"></div>
             </section>
 
-            <!-- Statistics View -->
-            <section id="stats" class="view">
-                <div class="view-header">
-                    <h2>Statistiques</h2>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-full">
-                        <h3>Distribution par catégorie</h3>
-                        <div id="categoryChart" class="chart"></div>
+            <!-- Settings Tab -->
+            <section id="settings" class="tab-content">
+                <h1>Paramètres</h1>
+                <div class="settings-container">
+                    <div class="setting-item">
+                        <h3>Données</h3>
+                        <p>Gérez vos données locales</p>
+                        <div class="setting-actions">
+                            <button class="btn-secondary" onclick="exportData()">📥 Exporter en JSON</button>
+                            <button class="btn-secondary" onclick="exportCSV()">📊 Exporter en CSV</button>
+                            <button class="btn-danger" onclick="clearAllData()">🗑️ Supprimer toutes les données</button>
+                        </div>
                     </div>
-                    <div class="stat-full">
-                        <h3>Notes moyennes par critère</h3>
-                        <div id="criteriaChart" class="chart"></div>
+                    <div class="setting-item">
+                        <h3>Thème</h3>
+                        <p>Mode sombre/clair</p>
+                        <button class="btn-secondary" onclick="toggleTheme()">Changer le thème</button>
+                    </div>
+                    <div class="setting-item">
+                        <h3>À propos</h3>
+                        <p>EvalHub v1.0 - Application gratuite pour évaluer vos projets</p>
+                        <a href="https://github.com/kjmb2006-cmyk/EvalHub" target="_blank" class="link">Voir le code source</a>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Project Detail Modal -->
-    <div id="projectModal" class="modal">
+    <!-- Modal for editing projects -->
+    <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <div id="modalBody"></div>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Modifier le projet</h2>
+            <form id="editForm" onsubmit="saveProject(event)">
+                <div class="form-group">
+                    <label>Nom du projet</label>
+                    <input type="text" id="editProjectName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editProjectDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select id="editProjectCategory" required>
+                        <option value="Santé">Santé</option>
+                        <option value="Technologie">Technologie</option>
+                        <option value="Éducation">Éducation</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Environnement">Environnement</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Responsable</label>
+                    <input type="text" id="editProjectOwner">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="editProjectNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Annuler</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Toast Notifications -->
-    <div id="toast" class="toast"></div>
-
-    <script src="js/storage.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

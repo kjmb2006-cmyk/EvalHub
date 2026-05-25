@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvalHub - Évaluer vos projets</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>⭐ EvalHub</h1>
+                <p>Évaluez vos projets simplement</p>
+            </div>
+            <nav class="nav">
+                <button class="btn-nav" onclick="goToApp()">Commencer</button>
+                <button class="btn-nav secondary" onclick="toggleTheme()">🌙 Thème</button>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <section class="hero-content">
+                <h2>Bienvenue sur EvalHub</h2>
+                <p>La plateforme simple et gratuite pour évaluer tous vos projets</p>
+                <button class="btn-primary large" onclick="goToApp()">Accéder à l'application</button>
+            </section>
+
+            <section class="features">
+                <h3>Nos fonctionnalités</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>⭐ Évaluation</h4>
+                        <p>Notez vos projets sur 5 critères essentiels</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Statistiques</h4>
+                        <p>Visualisez vos données en temps réel</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 Recherche</h4>
+                        <p>Trouvez rapidement vos projets</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📥 Export</h4>
+                        <p>Téléchargez vos évaluations</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Multi-plateforme</h4>
+                        <p>Fonctionne sur tous les appareils</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔒 Gratuit & Sécurisé</h4>
+                        <p>Vos données restent chez vous</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 EvalHub - Tous droits réservés | <a href="https://github.com/kjmb2006-cmyk/EvalHub">Code source</a></p>
+        </footer>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        function goToApp() {
+            window.location.href = 'app.html';
+        }
+    </script>
+</body>
+</html>
